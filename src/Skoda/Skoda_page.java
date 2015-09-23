@@ -1,0 +1,2170 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Skoda;
+
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.table.TableColumnModel;
+import net.proteanit.sql.DbUtils;
+
+/**
+ *
+ * @author Gzimi
+ */
+public class Skoda_page extends javax.swing.JFrame {
+
+    Connection conn = null;
+    PreparedStatement pst = null;
+    PreparedStatement pst1 = null;
+    PreparedStatement pst2 = null;
+    PreparedStatement pst3 = null;
+    ResultSet re = null;
+    String select1;
+
+    print pr = new print();
+    String faturatxt;
+    Boolean printuar;
+
+    boolean faturaa = false;
+    Date d;
+
+    /**
+     * Creates new form Skoda_page
+     */
+    public Skoda_page() {
+
+        initComponents();
+        conn = DB_Connection.ConnectDb();
+        starti();
+        kolonat();
+        printimi();
+
+    }
+
+    public void mbarimiigarancise() {
+        PreparedStatement prs = null;
+        try {
+            pst = conn.prepareStatement("DELETE FROM 'main'.'garanci'");
+            pst.execute();
+            int id = 0;;
+            String klienti = "";
+            Date data;
+            Date dataitash = new Date();
+            pst = conn.prepareStatement("select * from faturaarkiv");
+            re = pst.executeQuery();
+
+            while (re.next()) {
+                id = re.getInt("id_fatura");
+                klienti = re.getString("klienti");
+                String d = re.getString("garancia");
+                SimpleDateFormat f = new SimpleDateFormat("dd-MMM-yyyy");
+                data = f.parse(d);
+                System.out.println(data);
+                int n = (int) GaranciaNeDite(dataitash, data, TimeUnit.DAYS);
+                System.out.println(n);
+                if (n <= -1) {
+                    prs = conn.prepareStatement("insert into garanci values (?,?)");
+                    prs.setInt(1, id);
+                    prs.setString(2, klienti);
+                    prs.executeUpdate();
+                }
+            }
+            pst = conn.prepareStatement("select id_fature as Fatura,klienti as Klienti from garanci");
+            re = pst.executeQuery();
+            jTableGarancia.setModel(DbUtils.resultSetToTableModel(re));
+
+        } catch (Exception e) {
+            System.out.println("GABIM");
+        }
+    }
+
+    public void starti() {
+        this.tabelaa.setVisible(false);
+        shto_buton.setEnabled(false);
+        servis_buton.setEnabled(false);
+        garanci_buton.setEnabled(false);
+        emri_reg.setVisible(false);
+        pass_reg.setVisible(false);
+        jButtonRreg.setVisible(false);
+        jCheckBoxAdmin.setVisible(false);
+        jCheckBoxPunetor.setVisible(false);
+        login_buton.setEnabled(false);
+        jLabel17.setVisible(false);
+        jLabel6.setVisible(false);
+        hyr.setVisible(true);
+        try {
+            pst = conn.prepareStatement("DELETE FROM 'main'.'fatura'");
+            pst.execute();
+        } catch (Exception e) {
+        }
+    }
+
+    public static long GaranciaNeDite(java.util.Date date1, java.util.Date date2, TimeUnit timeUnit) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
+    }
+
+    public void ModeliITabelesSeMagazines() {
+        TableColumnModel de = table.getColumnModel();
+        de.getColumn(0).setPreferredWidth(1);
+        de.getColumn(1).setPreferredWidth(120);
+        de.getColumn(2).setPreferredWidth(120);
+        de.getColumn(3).setPreferredWidth(70);
+        de.getColumn(4).setPreferredWidth(70);
+        de.getColumn(5).setPreferredWidth(70);
+        de.getColumn(6).setPreferredWidth(70);
+        de.getColumn(7).setPreferredWidth(70);
+    }
+
+    public void kolonat() {
+        try {
+            pst = conn.prepareStatement("select id,kodi as Kodi,produkti as Produkti,rafti,sasiGJ as Gjendje,SasiD as Dalje,cmimH as Blere,cmimD as Shitur   from magazine_db");
+            re = pst.executeQuery();
+            table.setModel(DbUtils.resultSetToTableModel(re));
+
+            pst3 = conn.prepareStatement("select produkt as Produkti,sasia as Gjendja,cmimi as Cmimi from servis");
+            re = pst3.executeQuery();
+            table1.setModel(DbUtils.resultSetToTableModel(re));
+
+            ModeliITabelesSeMagazines();
+        } catch (Exception e) {
+        }
+
+    }
+
+    public void printimi() {
+        try {
+            pst = conn.prepareStatement("select *from fatura");
+            re = pst.executeQuery();
+            jTablePrintimi.setModel(DbUtils.resultSetToTableModel(re));
+        } catch (Exception e) {
+
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        login_buton = new javax.swing.JButton();
+        servis_buton = new javax.swing.JButton();
+        shto_buton = new javax.swing.JButton();
+        garanci_buton = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        login = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        emri_log = new javax.swing.JTextField();
+        pass_log = new javax.swing.JPasswordField();
+        jLabel3 = new javax.swing.JLabel();
+        hyr = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        pass_log_korr = new javax.swing.JTextField();
+        box = new javax.swing.JCheckBox();
+        jButtonRreg = new javax.swing.JButton();
+        jCheckBoxAdmin = new javax.swing.JCheckBox();
+        jCheckBoxPunetor = new javax.swing.JCheckBox();
+        emri_reg = new javax.swing.JTextField();
+        pass_reg = new javax.swing.JPasswordField();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        shtoprodukte = new javax.swing.JPanel();
+        shto = new javax.swing.JButton();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        sasia_shto = new javax.swing.JTextField();
+        cmimi_shto = new javax.swing.JTextField();
+        produkti_shto = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
+        fatura = new javax.swing.JPanel();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        jTablePrintimi = new javax.swing.JTable();
+        jButtonPrintim = new javax.swing.JButton();
+        jTextFieldTelefoni = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jTextFieldKlienti = new javax.swing.JTextField();
+        jButtonPrintim1 = new javax.swing.JButton();
+        jTextFieldKMD = new javax.swing.JTextField();
+        jTextFieldKMH = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jGarancia = new com.toedter.calendar.JDateChooser();
+        jLabel10 = new javax.swing.JLabel();
+        totalii = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        jData = new com.toedter.calendar.JDateChooser();
+        totalii1 = new javax.swing.JLabel();
+        shtoprodukte1 = new javax.swing.JPanel();
+        shto1 = new javax.swing.JButton();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        jLabel25 = new javax.swing.JLabel();
+        jLabel26 = new javax.swing.JLabel();
+        jLabel27 = new javax.swing.JLabel();
+        jLabel28 = new javax.swing.JLabel();
+        jLabel29 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        pershkrimi_shto1 = new javax.swing.JTextArea();
+        cmimdalje_shto1 = new javax.swing.JTextField();
+        produkti_shto1 = new javax.swing.JTextField();
+        rafti_shto1 = new javax.swing.JTextField();
+        kategori_shto1 = new javax.swing.JTextField();
+        sasihyrje_shto1 = new javax.swing.JTextField();
+        cmimhyrje_shto1 = new javax.swing.JTextField();
+        kodi_shto1 = new javax.swing.JTextField();
+        sasidalje_shto1 = new javax.swing.JTextField();
+        jLabel30 = new javax.swing.JLabel();
+        shto2 = new javax.swing.JButton();
+        garanci = new javax.swing.JPanel();
+        pass_log_korr1 = new javax.swing.JTextField();
+        box1 = new javax.swing.JCheckBox();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTableGarancia = new javax.swing.JTable();
+        jLabel15 = new javax.swing.JLabel();
+        tabelaa = new javax.swing.JPanel();
+        fature_klienti = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        jTablefaturateplota = new javax.swing.JTable();
+        jButtonPrintim2 = new javax.swing.JButton();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        jTablefaturat = new javax.swing.JTable();
+        jTextFieldKlientiKerkim = new javax.swing.JTextField();
+        jLabel20 = new javax.swing.JLabel();
+        tabela = new javax.swing.JPanel();
+        search = new javax.swing.JTextField();
+        jButton9 = new javax.swing.JButton();
+        jButton12 = new javax.swing.JButton();
+        jButton10 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        table = new javax.swing.JTable();
+        tabela1 = new javax.swing.JPanel();
+        search1 = new javax.swing.JTextField();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        table1 = new javax.swing.JTable();
+        jLabel11 = new javax.swing.JLabel();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Skoda");
+
+        jPanel1.setBackground(new java.awt.Color(0, 204, 51));
+        jPanel1.setForeground(new java.awt.Color(0, 102, 153));
+        jPanel1.setMaximumSize(new java.awt.Dimension(624, 538));
+        jPanel1.setMinimumSize(new java.awt.Dimension(624, 538));
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+
+        login_buton.setText("LOGIN");
+        login_buton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                login_butonActionPerformed(evt);
+            }
+        });
+
+        servis_buton.setText("SERVIS");
+        servis_buton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                servis_butonActionPerformed(evt);
+            }
+        });
+
+        shto_buton.setText("MAGAZINE");
+        shto_buton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                shto_butonActionPerformed(evt);
+            }
+        });
+
+        garanci_buton.setText("GARANCI");
+        garanci_buton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                garanci_butonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(8, 8, 8)
+                .addComponent(login_buton, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(shto_buton, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(servis_buton, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(garanci_buton, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(8, 8, 8)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(garanci_buton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(login_buton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(shto_buton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(servis_buton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        jPanel3.setLayout(new java.awt.CardLayout());
+
+        login.setBackground(new java.awt.Color(255, 255, 255));
+        login.setLayout(null);
+
+        jLabel1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel1.setText("Username :");
+        login.add(jLabel1);
+        jLabel1.setBounds(10, 360, 79, 28);
+
+        jLabel2.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel2.setText("Password :");
+        login.add(jLabel2);
+        jLabel2.setBounds(10, 410, 103, 31);
+
+        emri_log.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        emri_log.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                emri_logKeyReleased(evt);
+            }
+        });
+        login.add(emri_log);
+        emri_log.setBounds(100, 360, 180, 30);
+
+        pass_log.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        login.add(pass_log);
+        pass_log.setBounds(100, 410, 180, 30);
+
+        jLabel3.setFont(new java.awt.Font("SansSerif", 1, 48)); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Skoda/1381223_400240543438407_641094720_n.jpg"))); // NOI18N
+        login.add(jLabel3);
+        jLabel3.setBounds(10, -40, 300, 240);
+
+        hyr.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        hyr.setText("HYR");
+        hyr.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                hyrMouseClicked(evt);
+            }
+        });
+        hyr.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                hyrActionPerformed(evt);
+            }
+        });
+        login.add(hyr);
+        hyr.setBounds(10, 460, 110, 40);
+
+        jButton5.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jButton5.setText("DIL");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        login.add(jButton5);
+        jButton5.setBounds(160, 460, 120, 40);
+
+        pass_log_korr.setText(".");
+        login.add(pass_log_korr);
+        pass_log_korr.setBounds(90, 70, 0, 0);
+
+        box.setBackground(new java.awt.Color(255, 255, 255));
+        box.setAlignmentX(2.0F);
+        box.setAlignmentY(2.0F);
+        login.add(box);
+        box.setBounds(10, 250, 0, 0);
+
+        jButtonRreg.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jButtonRreg.setText("RREGJISTROHU");
+        jButtonRreg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonRregActionPerformed(evt);
+            }
+        });
+        login.add(jButtonRreg);
+        jButtonRreg.setBounds(70, 310, 180, 40);
+
+        buttonGroup1.add(jCheckBoxAdmin);
+        jCheckBoxAdmin.setSelected(true);
+        jCheckBoxAdmin.setText("Administrator");
+        login.add(jCheckBoxAdmin);
+        jCheckBoxAdmin.setBounds(40, 270, 110, 23);
+
+        buttonGroup1.add(jCheckBoxPunetor);
+        jCheckBoxPunetor.setText("Punetor");
+        login.add(jCheckBoxPunetor);
+        jCheckBoxPunetor.setBounds(180, 270, 100, 23);
+
+        emri_reg.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        emri_reg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                emri_regActionPerformed(evt);
+            }
+        });
+        emri_reg.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                emri_regKeyReleased(evt);
+            }
+        });
+        login.add(emri_reg);
+        emri_reg.setBounds(100, 180, 180, 30);
+
+        pass_reg.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        pass_reg.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pass_regActionPerformed(evt);
+            }
+        });
+        login.add(pass_reg);
+        pass_reg.setBounds(100, 230, 180, 30);
+
+        jLabel6.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel6.setText("Password :");
+        login.add(jLabel6);
+        jLabel6.setBounds(10, 230, 103, 31);
+
+        jLabel17.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel17.setText("Username :");
+        login.add(jLabel17);
+        jLabel17.setBounds(10, 180, 79, 28);
+
+        jPanel3.add(login, "card2");
+
+        shtoprodukte.setBackground(new java.awt.Color(255, 255, 255));
+        shtoprodukte.setLayout(null);
+
+        shto.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        shto.setText("SHTO / NDRYSHO");
+        shto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                shtoActionPerformed(evt);
+            }
+        });
+        shtoprodukte.add(shto);
+        shto.setBounds(10, 480, 270, 40);
+
+        jLabel12.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel12.setText("Sasia :");
+        shtoprodukte.add(jLabel12);
+        jLabel12.setBounds(10, 350, 70, 40);
+
+        jLabel13.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel13.setText("Cmimi :");
+        shtoprodukte.add(jLabel13);
+        jLabel13.setBounds(10, 400, 80, 30);
+
+        jLabel16.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel16.setText("Produkti :");
+        shtoprodukte.add(jLabel16);
+        jLabel16.setBounds(10, 320, 80, 19);
+
+        sasia_shto.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        shtoprodukte.add(sasia_shto);
+        sasia_shto.setBounds(100, 350, 180, 40);
+
+        cmimi_shto.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        cmimi_shto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmimi_shtoActionPerformed(evt);
+            }
+        });
+        shtoprodukte.add(cmimi_shto);
+        cmimi_shto.setBounds(100, 390, 180, 40);
+
+        produkti_shto.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        produkti_shto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                produkti_shtoKeyReleased(evt);
+            }
+        });
+        shtoprodukte.add(produkti_shto);
+        produkti_shto.setBounds(100, 310, 180, 40);
+
+        jLabel14.setFont(new java.awt.Font("SansSerif", 1, 48)); // NOI18N
+        jLabel14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Skoda/1381223_400240543438407_641094720_n.jpg"))); // NOI18N
+        shtoprodukte.add(jLabel14);
+        jLabel14.setBounds(0, -70, 280, 300);
+
+        jPanel3.add(shtoprodukte, "card2");
+
+        fatura.setBackground(new java.awt.Color(255, 255, 255));
+        fatura.setLayout(null);
+
+        jTablePrintimi.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Kodi", "Produkti", "Sasia", "Cmimi", "Vlera"
+            }
+        ));
+        jTablePrintimi.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jTablePrintimiMouseReleased(evt);
+            }
+        });
+        jScrollPane5.setViewportView(jTablePrintimi);
+
+        fatura.add(jScrollPane5);
+        jScrollPane5.setBounds(0, 260, 280, 190);
+
+        jButtonPrintim.setText(">>>");
+        jButtonPrintim.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPrintimActionPerformed(evt);
+            }
+        });
+        fatura.add(jButtonPrintim);
+        jButtonPrintim.setBounds(180, 510, 100, 40);
+        fatura.add(jTextFieldTelefoni);
+        jTextFieldTelefoni.setBounds(100, 220, 170, 30);
+
+        jLabel4.setText("Klienti :");
+        fatura.add(jLabel4);
+        jLabel4.setBounds(10, 190, 90, 14);
+
+        jLabel5.setText("Tel :");
+        fatura.add(jLabel5);
+        jLabel5.setBounds(10, 230, 90, 14);
+
+        jTextFieldKlienti.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldKlientiActionPerformed(evt);
+            }
+        });
+        fatura.add(jTextFieldKlienti);
+        jTextFieldKlienti.setBounds(100, 180, 170, 30);
+
+        jButtonPrintim1.setText("Printo");
+        jButtonPrintim1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPrintim1ActionPerformed(evt);
+            }
+        });
+        fatura.add(jButtonPrintim1);
+        jButtonPrintim1.setBounds(10, 510, 130, 40);
+        fatura.add(jTextFieldKMD);
+        jTextFieldKMD.setBounds(100, 140, 170, 30);
+
+        jTextFieldKMH.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldKMHActionPerformed(evt);
+            }
+        });
+        fatura.add(jTextFieldKMH);
+        jTextFieldKMH.setBounds(100, 100, 170, 30);
+
+        jLabel7.setText("Data :");
+        fatura.add(jLabel7);
+        jLabel7.setBounds(10, 30, 90, 14);
+
+        jLabel8.setText("KM Dalje :");
+        fatura.add(jLabel8);
+        jLabel8.setBounds(10, 150, 90, 14);
+
+        jLabel9.setText("KM Hyrje :");
+        fatura.add(jLabel9);
+        jLabel9.setBounds(10, 110, 90, 14);
+
+        jGarancia.setDateFormatString("dd-MMM-yyyy");
+        fatura.add(jGarancia);
+        jGarancia.setBounds(100, 60, 170, 30);
+
+        jLabel10.setText("Garancia :");
+        fatura.add(jLabel10);
+        jLabel10.setBounds(10, 70, 90, 14);
+
+        totalii.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        totalii.setText("0");
+        fatura.add(totalii);
+        totalii.setBounds(140, 470, 120, 30);
+
+        jLabel19.setText("Totali :");
+        fatura.add(jLabel19);
+        jLabel19.setBounds(80, 470, 60, 30);
+
+        jData.setDateFormatString("dd-MMM-yyyy");
+        fatura.add(jData);
+        jData.setBounds(100, 20, 170, 30);
+
+        totalii1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        totalii1.setText("L");
+        fatura.add(totalii1);
+        totalii1.setBounds(260, 470, 10, 30);
+
+        jPanel3.add(fatura, "card2");
+
+        shtoprodukte1.setBackground(new java.awt.Color(255, 255, 255));
+        shtoprodukte1.setLayout(null);
+
+        shto1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        shto1.setText("Fatura");
+        shto1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                shto1ActionPerformed(evt);
+            }
+        });
+        shtoprodukte1.add(shto1);
+        shto1.setBounds(150, 500, 130, 40);
+
+        jLabel22.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel22.setText("Pershkrimi");
+        shtoprodukte1.add(jLabel22);
+        jLabel22.setBounds(10, 320, 100, 40);
+
+        jLabel23.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel23.setText("Produkti");
+        shtoprodukte1.add(jLabel23);
+        jLabel23.setBounds(10, 50, 70, 40);
+
+        jLabel24.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel24.setText("Rafti");
+        shtoprodukte1.add(jLabel24);
+        jLabel24.setBounds(10, 100, 40, 30);
+
+        jLabel25.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel25.setText("Kategori");
+        shtoprodukte1.add(jLabel25);
+        jLabel25.setBounds(10, 130, 70, 40);
+
+        jLabel26.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel26.setText("Sasi Gjendje");
+        shtoprodukte1.add(jLabel26);
+        jLabel26.setBounds(10, 170, 100, 40);
+
+        jLabel27.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel27.setText("Kodi");
+        shtoprodukte1.add(jLabel27);
+        jLabel27.setBounds(10, 20, 40, 19);
+
+        jLabel28.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel28.setText("Cmim hyrje");
+        shtoprodukte1.add(jLabel28);
+        jLabel28.setBounds(10, 250, 90, 40);
+
+        jLabel29.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel29.setText("Cmim Dalje");
+        shtoprodukte1.add(jLabel29);
+        jLabel29.setBounds(10, 290, 90, 40);
+
+        pershkrimi_shto1.setColumns(20);
+        pershkrimi_shto1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        pershkrimi_shto1.setRows(5);
+        pershkrimi_shto1.setToolTipText("");
+        jScrollPane4.setViewportView(pershkrimi_shto1);
+
+        shtoprodukte1.add(jScrollPane4);
+        jScrollPane4.setBounds(10, 350, 270, 150);
+
+        cmimdalje_shto1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        cmimdalje_shto1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmimdalje_shto1ActionPerformed(evt);
+            }
+        });
+        shtoprodukte1.add(cmimdalje_shto1);
+        cmimdalje_shto1.setBounds(100, 290, 180, 40);
+
+        produkti_shto1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        shtoprodukte1.add(produkti_shto1);
+        produkti_shto1.setBounds(80, 50, 200, 40);
+
+        rafti_shto1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        rafti_shto1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rafti_shto1ActionPerformed(evt);
+            }
+        });
+        shtoprodukte1.add(rafti_shto1);
+        rafti_shto1.setBounds(80, 90, 200, 40);
+
+        kategori_shto1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        shtoprodukte1.add(kategori_shto1);
+        kategori_shto1.setBounds(80, 130, 200, 40);
+
+        sasihyrje_shto1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        shtoprodukte1.add(sasihyrje_shto1);
+        sasihyrje_shto1.setBounds(100, 170, 180, 40);
+
+        cmimhyrje_shto1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        cmimhyrje_shto1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmimhyrje_shto1ActionPerformed(evt);
+            }
+        });
+        shtoprodukte1.add(cmimhyrje_shto1);
+        cmimhyrje_shto1.setBounds(100, 250, 180, 40);
+
+        kodi_shto1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        kodi_shto1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                kodi_shto1KeyReleased(evt);
+            }
+        });
+        shtoprodukte1.add(kodi_shto1);
+        kodi_shto1.setBounds(80, 10, 200, 40);
+
+        sasidalje_shto1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        sasidalje_shto1.setEnabled(false);
+        sasidalje_shto1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sasidalje_shto1ActionPerformed(evt);
+            }
+        });
+        shtoprodukte1.add(sasidalje_shto1);
+        sasidalje_shto1.setBounds(100, 210, 180, 40);
+
+        jLabel30.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        jLabel30.setText("Sasi Dalje");
+        shtoprodukte1.add(jLabel30);
+        jLabel30.setBounds(10, 210, 90, 40);
+
+        shto2.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
+        shto2.setText("Shto/Ndrysho");
+        shto2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                shto2ActionPerformed(evt);
+            }
+        });
+        shtoprodukte1.add(shto2);
+        shto2.setBounds(10, 500, 120, 40);
+
+        jPanel3.add(shtoprodukte1, "card2");
+
+        garanci.setBackground(new java.awt.Color(255, 255, 255));
+        garanci.setLayout(null);
+
+        pass_log_korr1.setText(".");
+        garanci.add(pass_log_korr1);
+        pass_log_korr1.setBounds(90, 70, 0, 0);
+
+        box1.setBackground(new java.awt.Color(255, 255, 255));
+        box1.setAlignmentX(2.0F);
+        box1.setAlignmentY(2.0F);
+        garanci.add(box1);
+        box1.setBounds(10, 250, 0, 0);
+
+        jTableGarancia.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jTableGarancia.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jTableGaranciaMouseReleased(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTableGarancia);
+
+        garanci.add(jScrollPane1);
+        jScrollPane1.setBounds(10, 40, 270, 520);
+
+        jLabel15.setText("Faturat te cilave ju ka mbaruar garancia :");
+        garanci.add(jLabel15);
+        jLabel15.setBounds(20, 10, 250, 14);
+
+        jPanel3.add(garanci, "card2");
+
+        tabelaa.setBackground(new java.awt.Color(255, 255, 255));
+        tabelaa.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
+        tabelaa.setLayout(new java.awt.CardLayout());
+
+        fature_klienti.setBackground(new java.awt.Color(255, 255, 255));
+        fature_klienti.setLayout(null);
+
+        jTablefaturateplota.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Kodi", "Produkti", "Sasia", "Cmimi", "Vlera"
+            }
+        ));
+        jTablefaturateplota.setEnabled(false);
+        jScrollPane6.setViewportView(jTablefaturateplota);
+
+        fature_klienti.add(jScrollPane6);
+        jScrollPane6.setBounds(10, 260, 590, 170);
+
+        jButtonPrintim2.setText("<<<");
+        jButtonPrintim2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonPrintim2ActionPerformed(evt);
+            }
+        });
+        fature_klienti.add(jButtonPrintim2);
+        jButtonPrintim2.setBounds(60, 0, 100, 30);
+
+        jTablefaturat.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
+            },
+            new String [] {
+                "fatura", "totali", "klienti", "data", "cel", "garanci"
+            }
+        ));
+        jTablefaturat.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                jTablefaturatMouseReleased(evt);
+            }
+        });
+        jScrollPane7.setViewportView(jTablefaturat);
+
+        fature_klienti.add(jScrollPane7);
+        jScrollPane7.setBounds(10, 30, 590, 220);
+
+        jTextFieldKlientiKerkim.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldKlientiKerkimActionPerformed(evt);
+            }
+        });
+        jTextFieldKlientiKerkim.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextFieldKlientiKerkimKeyReleased(evt);
+            }
+        });
+        fature_klienti.add(jTextFieldKlientiKerkim);
+        jTextFieldKlientiKerkim.setBounds(420, 0, 180, 30);
+
+        jLabel20.setText("Kerko sipas Klientit :");
+        fature_klienti.add(jLabel20);
+        jLabel20.setBounds(300, 0, 120, 30);
+
+        tabelaa.add(fature_klienti, "card7");
+
+        tabela.setBackground(new java.awt.Color(255, 255, 255));
+        tabela.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        search.setFont(new java.awt.Font("SansSerif", 1, 14));
+        search.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchActionPerformed(evt);
+            }
+        });
+        tabela.add(search, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 22, 230, 40));
+
+        jButton9.setFont(new java.awt.Font("SansSerif", 1, 14));
+        jButton9.setText("KODI");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+        tabela.add(jButton9, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 21, -1, 40));
+
+        jButton12.setFont(new java.awt.Font("SansSerif", 1, 14));
+        jButton12.setText("PRODUKTI");
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
+        tabela.add(jButton12, new org.netbeans.lib.awtextra.AbsoluteConstraints(323, 21, 110, 40));
+
+        jButton10.setFont(new java.awt.Font("SansSerif", 1, 14));
+        jButton10.setText("RAFTI");
+        jButton10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton10ActionPerformed(evt);
+            }
+        });
+        tabela.add(jButton10, new org.netbeans.lib.awtextra.AbsoluteConstraints(433, 21, 80, 40));
+
+        jButton8.setFont(new java.awt.Font("SansSerif", 1, 14));
+        jButton8.setText("PERSHKRIMI");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+        tabela.add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(513, 21, 120, 40));
+
+        table.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        table.setRowHeight(30);
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                tableMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tableMouseReleased(evt);
+            }
+        });
+        jScrollPane3.setViewportView(table);
+
+        tabela.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(-20, 70, 650, 380));
+
+        tabelaa.add(tabela, "card3");
+
+        tabela1.setBackground(new java.awt.Color(255, 255, 255));
+
+        search1.setFont(new java.awt.Font("SansSerif", 1, 14));
+        search1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                search1ActionPerformed(evt);
+            }
+        });
+        search1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                search1KeyReleased(evt);
+            }
+        });
+
+        table1.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        table1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        table1.setRowHeight(30);
+        table1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                table1MousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                table1MouseReleased(evt);
+            }
+        });
+        jScrollPane8.setViewportView(table1);
+
+        jLabel11.setText("Kerko sipas produktit :");
+
+        javax.swing.GroupLayout tabela1Layout = new javax.swing.GroupLayout(tabela1);
+        tabela1.setLayout(tabela1Layout);
+        tabela1Layout.setHorizontalGroup(
+            tabela1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tabela1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(tabela1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 615, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(tabela1Layout.createSequentialGroup()
+                        .addComponent(jLabel11)
+                        .addGap(18, 18, 18)
+                        .addComponent(search1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 18, Short.MAX_VALUE))
+        );
+        tabela1Layout.setVerticalGroup(
+            tabela1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(tabela1Layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addGroup(tabela1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(search1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        tabelaa.add(tabela1, "card3");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tabelaa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(526, 526, 526))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tabelaa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        setSize(new java.awt.Dimension(978, 635));
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        if (hyr.isEnabled()) {
+            System.exit(0);
+        } else {
+            box.setSelected(false);
+            starti();
+            emri_log.setText("");
+            pass_log.setText("");
+            totalii.setText("0");
+            pass_log_korr.setText(".");
+            servis_buton.setEnabled(false);
+            shto_buton.setEnabled(false);
+            garanci_buton.setEnabled(false);
+            emri_log.setEnabled(true);
+            pass_log.setEnabled(true);
+            emri_reg.setVisible(false);
+            pass_reg.setVisible(false);
+            jButtonRreg.setVisible(false);
+            jCheckBoxAdmin.setVisible(false);
+            jCheckBoxPunetor.setVisible(false);
+            jLabel17.setVisible(false);
+            jLabel6.setVisible(false);
+            hyr.setEnabled(true);
+            hyr.setVisible(true);
+            try {
+                pst = conn.prepareStatement("DELETE FROM 'main'.'fatura'");
+                pst.execute();
+            } catch (Exception e) {
+            }
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void hyrActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_hyrActionPerformed
+        if (emri_log.getText().isEmpty() || pass_log.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(rootPane, "Ju lutem plotesoji te dy fushat!!.");
+        } else {
+            try {
+                pst = conn.prepareStatement("SELECT  password FROM  login_db WHERE  username = ?");
+                pst.setString(1, emri_log.getText());
+                re = pst.executeQuery();
+                if (re.next()) {
+                    String pass_korr2 = re.getString("password");
+                    pass_log_korr.setText(pass_korr2);
+                }
+            } catch (Exception e) {
+            }
+            String emri = emri_log.getText();
+            String pass = pass_log.getText();
+            String pass_korr = pass_log_korr.getText();
+            if (pass.equalsIgnoreCase(pass_korr)) {
+                box.setSelected(true);
+                this.tabelaa.setVisible(true);
+                shto_buton.setEnabled(true);
+                servis_buton.setEnabled(true);
+                garanci_buton.setEnabled(true);
+                emri_log.setEnabled(false);
+                pass_log.setEnabled(false);
+                hyr.setEnabled(false);
+                jButtonRreg.setEnabled(false);
+                login_buton.setEnabled(true);
+                jPanel3.removeAll();
+                jPanel3.add(shtoprodukte1);
+                jPanel3.repaint();
+                jPanel3.revalidate();
+                tabelaa.removeAll();
+                tabelaa.add(tabela);
+                tabelaa.repaint();
+                tabelaa.revalidate();
+                faturaa = false;
+                kolonat();
+
+                try {
+                    pst = conn.prepareStatement("SELECT  privilegj FROM  login_db WHERE  username = ?");
+                    pst.setString(1, emri_log.getText());
+                    re = pst.executeQuery();
+                    String privilegji = "";
+                    if (re.next()) {
+                        privilegji = re.getString("privilegj");
+                    }
+                    if (privilegji.equals("Administrator")) {
+                        kodi_shto1.setEnabled(true);
+                        produkti_shto1.setEnabled(true);
+                        rafti_shto1.setEnabled(true);
+                        kategori_shto1.setEnabled(true);
+                        sasihyrje_shto1.setEnabled(true);
+                        cmimhyrje_shto1.setEnabled(true);
+                        cmimdalje_shto1.setEnabled(true);
+                        pershkrimi_shto1.setEnabled(true);
+                        shto2.setVisible(true);
+                        produkti_shto.setEnabled(true);
+                        sasia_shto.setEnabled(true);
+                        cmimi_shto.setEnabled(true);
+                        shto.setVisible(true);
+                    } else if (privilegji.equals("Punetor")) {
+                        kodi_shto1.setEnabled(false);
+                        produkti_shto1.setEnabled(false);
+                        rafti_shto1.setEnabled(false);
+                        kategori_shto1.setEnabled(false);
+                        sasihyrje_shto1.setEnabled(false);
+                        cmimhyrje_shto1.setEnabled(false);
+                        cmimdalje_shto1.setEnabled(false);
+                        pershkrimi_shto1.setEnabled(false);
+                        shto2.setVisible(false);
+                        produkti_shto.setEnabled(false);
+                        sasia_shto.setEnabled(false);
+                        cmimi_shto.setEnabled(false);
+                        shto.setVisible(false);
+                    }
+
+                } catch (Exception e) {
+                }
+            } else {
+                JOptionPane.showMessageDialog(rootPane, "Username ose Passwordi nuk jane te sakte");
+                emri_log.setText("");
+                pass_log.setText("");
+            }
+        }
+    }//GEN-LAST:event_hyrActionPerformed
+
+    private void login_butonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_login_butonActionPerformed
+        String privilegjii = "";
+        try {
+            pst = conn.prepareStatement("SELECT  privilegj FROM  login_db WHERE  username = ?");
+            pst.setString(1, emri_log.getText());
+            re = pst.executeQuery();
+
+            if (re.next()) {
+                privilegjii = re.getString("privilegj");
+            }
+        } catch (Exception e) {
+
+        }
+        if (privilegjii.equals("Administrator")) {
+            emri_reg.setVisible(true);
+            pass_reg.setVisible(true);
+            jButtonRreg.setVisible(true);
+            jButtonRreg.setEnabled(true);
+            jCheckBoxAdmin.setVisible(true);
+            jCheckBoxPunetor.setVisible(true);
+            jLabel17.setVisible(true);
+            jLabel6.setVisible(true);
+            
+        }
+
+        jPanel3.removeAll();
+        jPanel3.add(login);
+        jPanel3.repaint();
+        jPanel3.revalidate();
+        faturaa = false;
+
+    }//GEN-LAST:event_login_butonActionPerformed
+
+    private void shto_butonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_shto_butonActionPerformed
+        jPanel3.removeAll();
+        jPanel3.add(shtoprodukte1);
+        jPanel3.repaint();
+        jPanel3.revalidate();
+        tabelaa.removeAll();
+        tabelaa.add(tabela);
+        tabelaa.repaint();
+        tabelaa.revalidate();
+        kodi_shto1.setText("");
+        produkti_shto1.setText("");
+        pershkrimi_shto1.setText("");
+        sasihyrje_shto1.setText("");
+        sasidalje_shto1.setText("");
+        cmimhyrje_shto1.setText("");
+        cmimdalje_shto1.setText("");
+        kategori_shto1.setText("");
+        rafti_shto1.setText("");
+
+        try {
+            pst = conn.prepareStatement("SELECT  privilegj FROM  login_db WHERE  username = ?");
+            pst.setString(1, emri_log.getText());
+            re = pst.executeQuery();
+            String privilegji = "";
+            if (re.next()) {
+                privilegji = re.getString("privilegj");
+            }
+            if (privilegji.equals("Administrator")) {
+                kodi_shto1.setEnabled(true);
+                produkti_shto1.setEnabled(true);
+                rafti_shto1.setEnabled(true);
+                kategori_shto1.setEnabled(true);
+                sasihyrje_shto1.setEnabled(true);
+                cmimhyrje_shto1.setEnabled(true);
+                cmimdalje_shto1.setEnabled(true);
+                pershkrimi_shto1.setEnabled(true);
+                shto2.setVisible(true);
+                produkti_shto.setEnabled(true);
+                sasia_shto.setEnabled(true);
+                cmimi_shto.setEnabled(true);
+                shto.setVisible(true);
+            } else if (privilegji.equals("Punetor")) {
+                kodi_shto1.setEnabled(false);
+                produkti_shto1.setEnabled(false);
+                rafti_shto1.setEnabled(false);
+                kategori_shto1.setEnabled(false);
+                sasihyrje_shto1.setEnabled(false);
+                cmimhyrje_shto1.setEnabled(false);
+                cmimdalje_shto1.setEnabled(false);
+                pershkrimi_shto1.setEnabled(false);
+                shto2.setVisible(false);
+                produkti_shto.setEnabled(false);
+                sasia_shto.setEnabled(false);
+                cmimi_shto.setEnabled(false);
+                shto.setVisible(false);
+            }
+
+        } catch (Exception e) {
+        }
+        faturaa = false;
+    }//GEN-LAST:event_shto_butonActionPerformed
+
+    private void servis_butonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_servis_butonActionPerformed
+        jPanel3.removeAll();
+        jPanel3.add(shtoprodukte);
+        jPanel3.repaint();
+        jPanel3.revalidate();
+        tabelaa.removeAll();
+        tabelaa.add(tabela1);
+        tabelaa.repaint();
+        tabelaa.revalidate(); // TODO add your handling code here:
+    }//GEN-LAST:event_servis_butonActionPerformed
+
+    private void hyrMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_hyrMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_hyrMouseClicked
+
+    private void cmimi_shtoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmimi_shtoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmimi_shtoActionPerformed
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        try {
+            if (search.getText().isEmpty()) {
+                pst1 = conn.prepareStatement("select id,kodi as Kodi,produkti as Produkti,rafti,sasiGJ as Gjendje,SasiD as Dalje,cmimH as Blere,cmimD as Shitur from magazine_db");
+            } else {
+                pst1 = conn.prepareStatement("select id,kodi as Kodi,produkti as Produkti,rafti,sasiGJ as Gjendje,SasiD as Dalje,cmimH as Blere,cmimD as Shitur from magazine_db where produkti like '%" + search.getText() + "%'");
+            }
+            re = pst1.executeQuery();
+            table.setModel(DbUtils.resultSetToTableModel(re));
+            ModeliITabelesSeMagazines();
+        } catch (Exception e) {
+        }   // TODO add your handling code here:
+    }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void shtoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_shtoActionPerformed
+        if (produkti_shto.getText().isEmpty() || sasia_shto.getText().isEmpty() || cmimi_shto.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(rootPane, "Ju lutem plotesoji te gjitha fushat!!.");
+        } else {
+            try {
+                pst = conn.prepareStatement("SELECT  * from servis WHERE  produkt like '" + produkti_shto.getText() + "'");
+                re = pst.executeQuery();
+                if (re.next()) {
+                    pst = conn.prepareStatement("UPDATE servis SET sasia = ?, cmimi = ? WHERE produkt like '" + produkti_shto.getText() + "'");
+                    pst.setInt(1, Integer.valueOf(sasia_shto.getText()));
+                    pst.setDouble(2, Double.valueOf(cmimi_shto.getText()));
+                    pst.executeUpdate();
+                    JOptionPane.showMessageDialog(rootPane, "Te dhenat e produktit : " + produkti_shto.getText() + " sapo u ndryshuan.");
+                } else {
+                    pst = conn.prepareStatement("INSERT INTO servis  VALUES (?,?,?)");
+                    pst.setString(1, produkti_shto.getText());
+                    pst.setInt(2, Integer.valueOf(sasia_shto.getText()));
+                    pst.setDouble(3, Double.valueOf(cmimi_shto.getText()));
+                    pst.executeUpdate();
+                    JOptionPane.showMessageDialog(rootPane, "" + produkti_shto.getText() + " sapo u shtua.");
+                }
+                if (pst3 == null) {
+                    pst3 = conn.prepareStatement("select produkt as Produkti,sasia as Gjendja,cmimi as Cmimi from servis");
+                }
+                re = pst3.executeQuery();
+                table1.setModel(DbUtils.resultSetToTableModel(re));
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(rootPane, "Ju lutem plotesojini te gjitha fushat sakte!");
+            }
+        }
+    }//GEN-LAST:event_shtoActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        try {
+            if (search.getText().isEmpty()) {
+                pst1 = conn.prepareStatement("select id,kodi as Kodi,produkti as Produkti,rafti,sasiGJ as Gjendje,SasiD as Dalje,cmimH as Blere,cmimD as Shitur from magazine_db");
+            } else {
+                pst1 = conn.prepareStatement("select id,kodi as Kodi,produkti as Produkti,rafti,sasiGJ as Gjendje,SasiD as Dalje,cmimH as Blere,cmimD as Shitur from magazine_db where kodi =" + search.getText() + "");
+            }
+            re = pst1.executeQuery();
+            table.setModel(DbUtils.resultSetToTableModel(re));
+            ModeliITabelesSeMagazines();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, "Ju lutem shkruani numra!");
+
+        }
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        try {
+            if (search.getText().isEmpty()) {
+                pst1 = conn.prepareStatement("select id,kodi as Kodi,produkti as Produkti,rafti,sasiGJ as Gjendje,SasiD as Dalje,cmimH as Blere,cmimD as Shitur from magazine_db");
+            } else {
+                pst1 = conn.prepareStatement("select id,kodi as Kodi,produkti as Produkti,rafti,sasiGJ as Gjendje,SasiD as Dalje,cmimH as Blere,cmimD as Shitur from magazine_db where pershkrim like '%" + search.getText() + "%'");
+            }
+            re = pst1.executeQuery();
+            table.setModel(DbUtils.resultSetToTableModel(re));
+            ModeliITabelesSeMagazines();
+        } catch (Exception e) {
+        }          // TODO add your handling code here:
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        try {
+            if (search.getText().isEmpty()) {
+                pst1 = conn.prepareStatement("select id,kodi as Kodi,produkti as Produkti,rafti,sasiGJ as Gjendje,SasiD as Dalje,cmimH as Blere,cmimD as Shitur from magazine_db");
+            } else {
+                pst1 = conn.prepareStatement("select id,kodi as Kodi,produkti as Produkti,rafti,sasiGJ as Gjendje,SasiD as Dalje,cmimH as Blere,cmimD as Shitur from magazine_db where rafti like '" + search.getText() + "'");
+            }
+            re = pst1.executeQuery();
+            table.setModel(DbUtils.resultSetToTableModel(re));
+            ModeliITabelesSeMagazines();
+        } catch (Exception e) {
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void tableMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseReleased
+        int row = table.getSelectedRow();
+        select1 = (table.getModel().getValueAt(row, 0).toString());
+
+        String produkti = "";
+        int sasigjendje = 0;
+        int cmimidales = 0;
+        int sasia = 0;
+        int sasi = 5;
+        int TotNeFature = 0;
+        String kodi = "";
+        try {
+            if (faturaa) {
+                try {
+
+                    pst = conn.prepareStatement("SELECT * from magazine_db  where id = ?");
+                    pst.setInt(1, Integer.valueOf(select1));
+                    re = pst.executeQuery();
+
+                    if (re.next()) {
+                        kodi = re.getString("kodi");
+                        produkti = re.getString("produkti");
+                        sasigjendje = re.getInt("sasiGJ");
+                        cmimidales = re.getInt("cmimD");
+                    }
+                    pst = conn.prepareStatement("SELECT * from fatura where produkti  = ? ");
+                    pst.setString(1, produkti);
+                    re = pst.executeQuery();
+
+                    if (re.next()) {
+                        sasia = re.getInt("sasia");
+                    }
+                    pst = conn.prepareStatement("SELECT count(produkti) from fatura");
+                    re = pst.executeQuery();
+
+                    if (re.next()) {
+                        TotNeFature = re.getInt("count(produkti)");
+
+                    }
+
+                    if (sasigjendje > sasia) {
+
+                        if (sasia <= 0) {
+
+                            if (TotNeFature < 10) {
+
+                                pst = conn.prepareStatement("Insert into fatura values (?,?,?,?,?)");
+                                pst.setString(1, kodi);
+                                pst.setString(2, produkti);
+                                pst.setInt(3, 1);
+                                pst.setInt(4, cmimidales);
+                                pst.setInt(5, cmimidales);
+
+                                pst.execute();
+
+                            } else {
+                                JOptionPane.showMessageDialog(rootPane, "Arritet numrim maximal te produkteve per nje fature");
+                            }
+                        } else {
+                            pst = conn.prepareStatement("select sasia from fatura WHERE produkti = ?");
+                            pst.setString(1, produkti);
+                            re = pst.executeQuery();
+
+                            if (re.next()) {
+                                sasi = re.getInt("sasia") + 1;
+
+                            }
+                            pst = conn.prepareStatement("UPDATE fatura SET sasia=sasia+1,vlera=? WHERE produkti = ?");
+                            pst.setInt(1, sasi * cmimidales);
+                            pst.setString(2, produkti);
+                            pst.executeUpdate();
+
+                        }
+                        pst = conn.prepareStatement("select sum(vlera) from fatura");
+                        re = pst.executeQuery();
+                        if (re.next()) {
+                            int totali = re.getInt("sum(vlera)");
+                            totalii.setText(String.valueOf(totali));
+
+                        }
+
+                    } else {
+                        JOptionPane.showMessageDialog(rootPane, "Gjendja e " + produkti + " ne magazine  eshte 0");
+                    }
+                    pst = conn.prepareStatement("select * from fatura");
+                    re = pst.executeQuery();
+                    jTablePrintimi.setModel(DbUtils.resultSetToTableModel(re));
+                    if (pst1 == null) {
+                        pst1 = conn.prepareStatement("select id,kodi as Kodi,produkti as Produkti,rafti,sasiGJ as Gjendje,SasiD as Dalje,cmimH as Blere,cmimD as Shitur from magazine_db");
+                    }
+                    re = pst1.executeQuery();
+                    table.setModel(DbUtils.resultSetToTableModel(re));
+                } catch (Exception e) {
+                }
+            } else {
+                pst = conn.prepareStatement("SELECT * from magazine_db where id = " + select1 + "");
+                re = pst.executeQuery();
+                if (re.next()) {
+                    kodi_shto1.setText(re.getString("kodi"));
+                    rafti_shto1.setText(re.getString("rafti"));
+                    kategori_shto1.setText(re.getString("kategori"));
+                    pershkrimi_shto1.setText(re.getString("pershkrim"));
+                    produkti_shto1.setText(re.getString("produkti"));
+                    sasihyrje_shto1.setText(re.getString("sasiGJ"));
+                    sasidalje_shto1.setText(re.getString("sasiD"));
+                    cmimhyrje_shto1.setText(re.getString("cmimH"));
+                    cmimdalje_shto1.setText(re.getString("cmimD"));
+                    produkti_shto1.setEnabled(false);
+                    shto2.setText("NDRYSHO");
+                }
+                if (pst1 == null) {
+                    pst1 = conn.prepareStatement("select id,kodi as Kodi,produkti as Produkti,rafti,sasiGJ as Gjendje,SasiD as Dalje,cmimH as Blere,cmimD as Shitur from magazine_db");
+                }
+                re = pst1.executeQuery();
+                table.setModel(DbUtils.resultSetToTableModel(re));
+
+                jPanel3.removeAll();
+                jPanel3.add(shtoprodukte1);
+                jPanel3.repaint();
+                jPanel3.revalidate();
+            }
+            ModeliITabelesSeMagazines();
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_tableMouseReleased
+
+    private void shto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_shto1ActionPerformed
+        jPanel3.removeAll();
+        jPanel3.add(fatura);
+        jPanel3.repaint();
+        jPanel3.revalidate();
+        faturaa = true;
+    }//GEN-LAST:event_shto1ActionPerformed
+
+    private void cmimdalje_shto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmimdalje_shto1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmimdalje_shto1ActionPerformed
+
+    private void rafti_shto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rafti_shto1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rafti_shto1ActionPerformed
+
+    private void cmimhyrje_shto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmimhyrje_shto1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmimhyrje_shto1ActionPerformed
+
+    private void sasidalje_shto1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sasidalje_shto1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_sasidalje_shto1ActionPerformed
+
+    private void shto2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_shto2ActionPerformed
+        if (kodi_shto1.getText().isEmpty() || produkti_shto1.getText().isEmpty() || rafti_shto1.getText().isEmpty() || kategori_shto1.getText().isEmpty() || sasihyrje_shto1.getText().isEmpty() || cmimhyrje_shto1.getText().isEmpty() || cmimdalje_shto1.getText().isEmpty() || pershkrimi_shto1.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(rootPane, "Ju lutem plotesoji te gjitha fushat!!.");
+        } else {
+            try {
+                pst = conn.prepareStatement("SELECT  * from `magazine_db` WHERE  `kodi` = ?");
+                pst.setString(1, kodi_shto1.getText());
+                re = pst.executeQuery();
+                if (re.next()) {
+                    pst = conn.prepareStatement("UPDATE magazine_db SET rafti = ?, kategori = ?,pershkrim = ?,sasiGJ = ?,cmimH = ?,cmimD = ? WHERE kodi = ?");
+                    pst.setString(1, rafti_shto1.getText());
+                    pst.setString(2, kategori_shto1.getText());
+                    pst.setString(3, pershkrimi_shto1.getText());
+                    pst.setInt(4, Integer.valueOf(sasihyrje_shto1.getText()));
+                    pst.setDouble(5, Double.valueOf(cmimhyrje_shto1.getText()));
+                    pst.setDouble(6, Double.valueOf(cmimdalje_shto1.getText()));
+                    pst.setString(7, kodi_shto1.getText());
+                    pst.executeUpdate();
+                    JOptionPane.showMessageDialog(rootPane, "Te dhenat e produktit me kod : " + kodi_shto1.getText() + " sapo u ndryshuan.");
+
+                } else {
+                    pst = conn.prepareStatement("INSERT INTO magazine_db  VALUES (null,?,?,?,?,?,?,?,?,?)");
+                    pst.setString(1, kodi_shto1.getText());
+                    pst.setString(2, rafti_shto1.getText());
+                    pst.setString(3, kategori_shto1.getText());
+                    pst.setString(4, pershkrimi_shto1.getText());
+                    pst.setString(5, produkti_shto1.getText());
+                    pst.setInt(6, Integer.valueOf(sasihyrje_shto1.getText()));
+                    pst.setDouble(7, Double.valueOf(cmimhyrje_shto1.getText()));
+                    pst.setInt(8, 0);
+                    pst.setDouble(9, Double.valueOf(cmimdalje_shto1.getText()));
+                    pst.executeUpdate();
+                    JOptionPane.showMessageDialog(rootPane, "" + produkti_shto1.getText() + " sapo u shtua ne magazine.");
+                }
+                if (pst1 == null) {
+                    pst1 = conn.prepareStatement("select id,kodi as Kodi,produkti as Produkti,rafti,sasiGJ as Gjendje,SasiD as Dalje,cmimH as Blere,cmimD as Shitur from magazine_db");
+                }
+                re = pst1.executeQuery();
+                table.setModel(DbUtils.resultSetToTableModel(re));
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(rootPane, "Ju lutem plotesojini te gjitha fushat sakte!");
+            }
+            ModeliITabelesSeMagazines();
+            kolonat();
+        }
+          
+          
+    }//GEN-LAST:event_shto2ActionPerformed
+
+    private void searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_searchActionPerformed
+
+    private void tableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tableMousePressed
+
+    private void jButtonRregActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRregActionPerformed
+        if (emri_reg.getText().isEmpty() || pass_reg.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(rootPane, "Ju lutem plotesoji te dy fushat!!.");
+        } else {
+            try {
+                pst = conn.prepareStatement("INSERT INTO login_db  VALUES (?,?,?)");
+                pst.setString(1, emri_reg.getText());
+                pst.setString(2, pass_reg.getText());
+                if (jCheckBoxAdmin.isSelected()) {
+                    pst.setString(3, "Administrator");
+                } else if (jCheckBoxPunetor.isSelected()) {
+                    pst.setString(3, "Punetor");
+                }
+                pst.executeUpdate();
+
+                JOptionPane.showMessageDialog(rootPane, "" + emri_reg.getText() + ", ju sapo u rregistruat.");
+
+                box.setSelected(false);
+                starti();
+                emri_log.setText("");
+                pass_log.setText("");
+                totalii.setText("0");
+                pass_log_korr.setText(".");
+                servis_buton.setEnabled(false);
+                shto_buton.setEnabled(false);
+                garanci_buton.setEnabled(false);
+                emri_log.setEnabled(true);
+                pass_log.setEnabled(true);
+                emri_reg.setVisible(false);
+                pass_reg.setVisible(false);
+                jButtonRreg.setVisible(false);
+                jCheckBoxAdmin.setVisible(false);
+                jCheckBoxPunetor.setVisible(false);
+                jLabel17.setVisible(false);
+                jLabel6.setVisible(false);
+                hyr.setEnabled(true);
+                hyr.setVisible(true);
+                try {
+                    pst = conn.prepareStatement("DELETE FROM 'main'.'fatura'");
+                    pst.execute();
+                } catch (Exception e) {
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(rootPane, "Ky user ekziton nje here ne DataBase ");
+                emri_reg.setText("");
+                pass_reg.setText("");
+
+            }
+                 
+        }         // TODO add your handling code here:
+    }//GEN-LAST:event_jButtonRregActionPerformed
+
+    private void jButtonPrintimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrintimActionPerformed
+        jTextFieldKlientiKerkim.setText(jTextFieldKlienti.getText());
+        try {
+            if (jTextFieldKlienti.getText().isEmpty()) {
+                pst2 = conn.prepareStatement("select id_fatura,data,totali,garancia,telefoni,KMHyrje,KMDalje from faturaarkiv ");
+            } else {
+                pst2 = conn.prepareStatement("select id_fatura,data,totali,garancia,telefoni,KMHyrje,KMDalje from faturaarkiv where klienti like '" + jTextFieldKlientiKerkim.getText() + "%'");
+
+            }
+            re = pst2.executeQuery();
+            jTablefaturat.setModel(DbUtils.resultSetToTableModel(re));
+
+        } catch (Exception e) {
+            System.out.println("gabim");
+        }
+          tabelaa.removeAll();
+        tabelaa.add(fature_klienti);
+        tabelaa.repaint();
+        tabelaa.revalidate();
+        faturaa = false;
+
+    }//GEN-LAST:event_jButtonPrintimActionPerformed
+
+    private void jButtonPrintim1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrintim1ActionPerformed
+        int kodi = 0;
+        double totali = 0;
+
+        String datasearch = ((JTextField) jGarancia.getDateEditor().getUiComponent()).getText();
+        String datasearch1 = ((JTextField) jData.getDateEditor().getUiComponent()).getText();
+        if (jData.getDate() == null || jGarancia.getDate() == null || jTextFieldKMH.getText().isEmpty() || jTextFieldKMD.getText().isEmpty() || jTextFieldKlienti.getText().isEmpty() || jTextFieldTelefoni.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Ju lutem plotesojini te gjitha fushat sakte!");
+        } else {
+            pr.setVisible(true);
+            faturatxt = pr.PrintFatura(datasearch1, datasearch, jTextFieldKMH.getText(), jTextFieldKMD.getText(), jTextFieldKlienti.getText(), jTextFieldTelefoni.getText(), totalii.getText());
+            pr.jLabelPrint.setText(faturatxt);
+            printuar = pr.printimi();
+            pr.setVisible(false);
+            System.out.println(printuar);
+            if (printuar) {
+
+                try {
+                    pst = conn.prepareStatement("select max(id) from kodi");
+                    re = pst.executeQuery();
+                    if (re.next()) {
+                        kodi = re.getInt("max(id)");
+                    }
+
+                    pst = conn.prepareStatement("select sum(vlera) from fatura");
+                    re = pst.executeQuery();
+                    if (re.next()) {
+                        totali = re.getInt("sum(vlera)");
+
+                    }
+                    pst = conn.prepareStatement("INSERT INTO faturaarkiv VALUES (?,?,?,?,?,?,?,?)");
+                    pst.setInt(1, kodi);
+                    pst.setInt(2, Integer.valueOf(jTextFieldTelefoni.getText()));
+                    pst.setString(3, datasearch1);
+                    pst.setDouble(4, totali);
+                    pst.setString(5, datasearch);
+                    pst.setString(6, jTextFieldKlienti.getText());
+                    pst.setInt(7, Integer.valueOf(jTextFieldKMH.getText()));
+                    pst.setInt(8, Integer.valueOf(jTextFieldKMD.getText()));
+                    pst.execute();
+                    pst = conn.prepareStatement("insert into kodi values (null) ");
+                    pst.execute();
+                    pst = conn.prepareStatement("UPDATE magazine_db SET sasiD= sasiD +(select sasia from fatura where fatura.kodi = magazine_db.kodi),sasiGJ = sasiGJ - (select sasia from fatura where fatura.kodi = magazine_db.kodi) where magazine_db.kodi = (Select kodi from fatura where fatura.kodi = magazine_db.kodi )");
+                    pst.execute();
+
+                    pst = conn.prepareStatement("INSERT INTO  totfatura Select ?,kodi,produkti,sasia ,cmimi,vlera,?,? from fatura");
+                    pst.setInt(1, kodi);
+                    pst.setString(2, jTextFieldKlienti.getText());
+                    pst.setString(3, jTextFieldTelefoni.getText());
+                    pst.execute();
+
+                    if (pst1 == null) {
+                        pst1 = conn.prepareStatement("select id,kodi as Kodi,produkti as Produkti,rafti,sasiGJ as Gjendje,SasiD as Dalje,cmimH as Blere,cmimD as Shitur from magazine_db");
+                    }
+                    re = pst1.executeQuery();
+                    table.setModel(DbUtils.resultSetToTableModel(re));
+                    ModeliITabelesSeMagazines();
+                    pst = conn.prepareStatement("DELETE FROM 'main'.'fatura'");
+                    pst.execute();
+                    printimi();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Ju lutem plotesojini te gjitha fushat sakte!");
+                }
+                totalii.setText("0");
+                jTextFieldKlienti.setText("");
+                jTextFieldTelefoni.setText("");
+                jTextFieldKMH.setText("");
+                jTextFieldKMD.setText("");
+                jGarancia.setDate(null);
+            }
+        }
+    }//GEN-LAST:event_jButtonPrintim1ActionPerformed
+
+    private void jButtonPrintim2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPrintim2ActionPerformed
+        tabelaa.removeAll();
+        tabelaa.add(tabela);
+        tabelaa.repaint();
+        tabelaa.revalidate();
+        faturaa = true;
+    }//GEN-LAST:event_jButtonPrintim2ActionPerformed
+
+    private void jTablePrintimiMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTablePrintimiMouseReleased
+        int row = jTablePrintimi.getSelectedRow();
+        String select = (jTablePrintimi.getModel().getValueAt(row, 0).toString());
+        int nr1 = 0;
+        double cmimi = 0;
+        try {
+            System.out.println("1");
+            pst = conn.prepareStatement("Select * from fatura  where kodi =" + select + "");
+            re = pst.executeQuery();
+            if (re.next()) {
+                nr1 = re.getInt("sasia");
+                cmimi = re.getDouble("cmimi");
+            }
+            pst = conn.prepareStatement("Update fatura set sasia=sasia-1,vlera=" + (nr1 - 1) * cmimi + " where kodi =" + select + "");
+            pst.executeUpdate();
+
+            if (nr1 <= 1) {
+                pst = conn.prepareStatement("Delete from fatura where kodi =" + select + "");
+                pst.execute();
+            }
+            pst = conn.prepareStatement("select sum(vlera) from fatura");
+            re = pst.executeQuery();
+            if (re.next()) {
+                int totali = re.getInt("sum(vlera)");
+                totalii.setText(String.valueOf(totali));
+            }
+
+            pst = conn.prepareStatement("Select * from fatura ");
+            re = pst.executeQuery();
+            jTablePrintimi.setModel(DbUtils.resultSetToTableModel(re));
+        } catch (Exception e) {
+        }
+
+    }//GEN-LAST:event_jTablePrintimiMouseReleased
+
+    private void jTextFieldKlientiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldKlientiActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldKlientiActionPerformed
+
+    private void kodi_shto1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_kodi_shto1KeyReleased
+        try {
+            pst = conn.prepareStatement("SELECT * from magazine_db where kodi = " + kodi_shto1.getText() + "");
+            re = pst.executeQuery();
+            if (re.next()) {
+                rafti_shto1.setText(re.getString("rafti"));
+                kategori_shto1.setText(re.getString("kategori"));
+                pershkrimi_shto1.setText(re.getString("pershkrim"));
+                produkti_shto1.setText(re.getString("produkti"));
+                sasihyrje_shto1.setText(re.getString("sasiGJ"));
+                sasidalje_shto1.setText(re.getString("sasiD"));
+                cmimhyrje_shto1.setText(re.getString("cmimH"));
+                cmimdalje_shto1.setText(re.getString("cmimD"));
+                produkti_shto1.setEnabled(false);
+                shto2.setText("NDRYSHO");
+            } else {
+                rafti_shto1.setText("");
+                kategori_shto1.setText("");
+                pershkrimi_shto1.setText("");
+                produkti_shto1.setText("");
+                sasihyrje_shto1.setText("");
+                sasidalje_shto1.setText("");
+                cmimhyrje_shto1.setText("");
+                cmimdalje_shto1.setText("");
+                produkti_shto1.setEnabled(true);
+                shto2.setText("SHTO");
+            }
+        } catch (Exception e) {
+
+        }
+    }//GEN-LAST:event_kodi_shto1KeyReleased
+
+    private void jTextFieldKMHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldKMHActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldKMHActionPerformed
+
+    private void jTextFieldKlientiKerkimKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldKlientiKerkimKeyReleased
+        try {
+            if (jTextFieldKlientiKerkim.getText().isEmpty()) {
+                pst2 = conn.prepareStatement("select id_fatura,data,totali,garancia,telefoni,KMHyrje,KMDalje from faturaarkiv ");
+            } else {
+                pst2 = conn.prepareStatement("select id_fatura,data,totali,garancia,telefoni,KMHyrje,KMDalje from faturaarkiv where klienti like '" + jTextFieldKlientiKerkim.getText() + "%'");
+            }
+            re = pst2.executeQuery();
+            jTablefaturat.setModel(DbUtils.resultSetToTableModel(re));
+
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_jTextFieldKlientiKerkimKeyReleased
+
+    private void jTextFieldKlientiKerkimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldKlientiKerkimActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldKlientiKerkimActionPerformed
+
+    private void jTablefaturatMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTablefaturatMouseReleased
+        int row = jTablefaturat.getSelectedRow();
+        String select = (jTablefaturat.getModel().getValueAt(row, 0).toString());
+        try {
+            pst = conn.prepareStatement("select kodi,produkti,sasia,cmimi,vlera from totfatura where id_fatura=" + select + "");
+            re = pst.executeQuery();
+            jTablefaturateplota.setModel(DbUtils.resultSetToTableModel(re));
+            re = pst2.executeQuery();
+            jTablefaturat.setModel(DbUtils.resultSetToTableModel(re));
+        } catch (Exception e) {
+        }
+
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTablefaturatMouseReleased
+
+    private void search1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_search1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_search1ActionPerformed
+
+    private void table1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table1MousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_table1MousePressed
+
+    private void table1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_table1MouseReleased
+        String select = (table1.getModel().getValueAt(table1.getSelectedRow(), 0).toString());
+        try {
+            pst = conn.prepareStatement("SELECT * from servis where produkt like '" + select + "'");
+            re = pst.executeQuery();
+            if (re.next()) {
+                produkti_shto.setText(re.getString("produkt"));
+                sasia_shto.setText(re.getString("sasia"));
+                cmimi_shto.setText(re.getString("cmimi"));
+
+                shto.setText("NDRYSHO");
+            }
+            if (pst3 == null) {
+                pst3 = conn.prepareStatement("select produkt as Produkti,sasia as Gjendja,cmimi as Cmimi from servis");
+            }
+            re = pst3.executeQuery();
+            table1.setModel(DbUtils.resultSetToTableModel(re));
+
+            jPanel3.removeAll();
+            jPanel3.add(shtoprodukte);
+            jPanel3.repaint();
+            jPanel3.revalidate();
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_table1MouseReleased
+
+    private void emri_logKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_emri_logKeyReleased
+        try {
+            pst = conn.prepareStatement("SELECT  privilegj FROM  login_db WHERE  username = ?");
+            pst.setString(1, emri_log.getText());
+            re = pst.executeQuery();
+            String privilegji = "";
+            if (re.next()) {
+                privilegji = re.getString("privilegj");
+            }
+            if (privilegji == "") {
+                jButtonRreg.setVisible(false);
+                jCheckBoxAdmin.setVisible(false);
+                jCheckBoxPunetor.setVisible(false);
+                hyr.setVisible(true);
+
+            } else {
+                if (emri_log.getText().isEmpty()) {
+                    jButtonRreg.setVisible(false);
+                    jCheckBoxAdmin.setVisible(false);
+                    jCheckBoxPunetor.setVisible(false);
+                    hyr.setVisible(true);
+                } else {
+                    pst = conn.prepareStatement("select * from login_db where username like '" + emri_log.getText() + "'");
+                    re = pst.executeQuery();
+                    if (re.next()) {
+                        jButtonRreg.setVisible(false);
+                        jCheckBoxAdmin.setVisible(false);
+                        jCheckBoxPunetor.setVisible(false);
+                        hyr.setVisible(true);
+                    } else {
+                        jButtonRreg.setVisible(true);
+                        jCheckBoxAdmin.setVisible(true);
+                        jCheckBoxPunetor.setVisible(true);
+                        hyr.setVisible(false);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("gabim");
+        }
+    }//GEN-LAST:event_emri_logKeyReleased
+
+    private void search1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_search1KeyReleased
+        try {
+            if (search1.getText().isEmpty()) {
+                pst3 = conn.prepareStatement("select produkt as Produkti,sasia as Gjendja,cmimi as Cmimi from servis");
+            } else {
+                pst3 = conn.prepareStatement("select produkt as Produkti,sasia as Gjendja,cmimi as Cmimi from servis where produkti like '%" + search1.getText() + "%'");
+            }
+            re = pst3.executeQuery();
+            table1.setModel(DbUtils.resultSetToTableModel(re));
+            ModeliITabelesSeMagazines();
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_search1KeyReleased
+
+    private void produkti_shtoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_produkti_shtoKeyReleased
+        try {
+            pst = conn.prepareStatement("SELECT * from servis where produkt like '" + produkti_shto.getText() + "'");
+            re = pst.executeQuery();
+            if (re.next()) {
+                sasia_shto.setText(re.getString("sasia"));
+                cmimi_shto.setText(re.getString("cmimi"));
+
+                shto.setText("NDRYSHO");
+            } else {
+                sasia_shto.setText("");
+                cmimi_shto.setText("");
+                shto.setText("SHTO");
+            }
+        } catch (Exception e) {
+            System.out.println("gabim");
+        }
+    }//GEN-LAST:event_produkti_shtoKeyReleased
+
+    private void garanci_butonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_garanci_butonActionPerformed
+           jTextFieldKlientiKerkim.setText(jTextFieldKlienti.getText());
+        try {
+            if (jTextFieldKlienti.getText().isEmpty()) {
+                pst = conn.prepareStatement("select id_fatura,data,totali,garancia,telefoni,KMHyrje,KMDalje from faturaarkiv ");
+            } else {
+                pst = conn.prepareStatement("select id_fatura,data,totali,garancia,telefoni,KMHyrje,KMDalje from faturaarkiv where klienti like '" + jTextFieldKlientiKerkim.getText() + "%'");
+
+            }
+            re = pst.executeQuery();
+            jTablefaturat.setModel(DbUtils.resultSetToTableModel(re));
+
+        } catch (Exception e) {
+            System.out.println("gabim");
+        }
+          tabelaa.removeAll();
+        tabelaa.add(fature_klienti);
+        tabelaa.repaint();
+        tabelaa.revalidate();
+        jPanel3.removeAll();
+        jPanel3.add(garanci);
+        jPanel3.repaint();
+        jPanel3.revalidate();
+              tabelaa.removeAll();
+        tabelaa.add(fature_klienti);
+        tabelaa.repaint();
+        tabelaa.revalidate();
+         mbarimiigarancise();
+    }//GEN-LAST:event_garanci_butonActionPerformed
+
+    private void jTableGaranciaMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableGaranciaMouseReleased
+        int row = jTableGarancia.getSelectedRow();
+        String select = (jTableGarancia.getModel().getValueAt(row, 0).toString());
+        try {
+            if (jTextFieldKlienti.getText().isEmpty()) {
+                pst2 = conn.prepareStatement("select id_fatura,data,totali,garancia,telefoni,KMHyrje,KMDalje from faturaarkiv ");
+            } else {
+                pst2 = conn.prepareStatement("select id_fatura,data,totali,garancia,telefoni,KMHyrje,KMDalje from faturaarkiv where klienti like '" + jTextFieldKlientiKerkim.getText() + "%'");
+
+            }
+            re = pst2.executeQuery();
+            jTablefaturat.setModel(DbUtils.resultSetToTableModel(re));
+
+            tabelaa.removeAll();
+            tabelaa.add(fature_klienti);
+            tabelaa.repaint();
+            tabelaa.revalidate();
+
+            pst = conn.prepareStatement("select kodi,produkti,sasia,cmimi,vlera from totfatura where id_fatura=" + select + "");
+            re = pst.executeQuery();
+            jTablefaturateplota.setModel(DbUtils.resultSetToTableModel(re));
+            pst = conn.prepareStatement("select id_fature as Fatura,klienti as Klienti from garanci");
+            re = pst.executeQuery();
+            jTableGarancia.setModel(DbUtils.resultSetToTableModel(re));
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_jTableGaranciaMouseReleased
+
+    private void emri_regKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_emri_regKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_emri_regKeyReleased
+
+    private void emri_regActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emri_regActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_emri_regActionPerformed
+
+    private void pass_regActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pass_regActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_pass_regActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Skoda_page.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Skoda_page.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Skoda_page.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Skoda_page.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Skoda_page().setVisible(true);
+            }
+        });
+    }
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox box;
+    private javax.swing.JCheckBox box1;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JTextField cmimdalje_shto1;
+    private javax.swing.JTextField cmimhyrje_shto1;
+    private javax.swing.JTextField cmimi_shto;
+    private javax.swing.JTextField emri_log;
+    private javax.swing.JTextField emri_reg;
+    private javax.swing.JPanel fatura;
+    private javax.swing.JPanel fature_klienti;
+    private javax.swing.JPanel garanci;
+    private javax.swing.JButton garanci_buton;
+    private javax.swing.JButton hyr;
+    private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
+    private javax.swing.JButton jButtonPrintim;
+    private javax.swing.JButton jButtonPrintim1;
+    private javax.swing.JButton jButtonPrintim2;
+    private javax.swing.JButton jButtonRreg;
+    private javax.swing.JCheckBox jCheckBoxAdmin;
+    private javax.swing.JCheckBox jCheckBoxPunetor;
+    private com.toedter.calendar.JDateChooser jData;
+    private com.toedter.calendar.JDateChooser jGarancia;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel19;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
+    private javax.swing.JLabel jLabel27;
+    private javax.swing.JLabel jLabel28;
+    private javax.swing.JLabel jLabel29;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel30;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JTable jTableGarancia;
+    private javax.swing.JTable jTablePrintimi;
+    private javax.swing.JTable jTablefaturat;
+    private javax.swing.JTable jTablefaturateplota;
+    private javax.swing.JTextField jTextFieldKMD;
+    private javax.swing.JTextField jTextFieldKMH;
+    private javax.swing.JTextField jTextFieldKlienti;
+    private javax.swing.JTextField jTextFieldKlientiKerkim;
+    private javax.swing.JTextField jTextFieldTelefoni;
+    private javax.swing.JTextField kategori_shto1;
+    private javax.swing.JTextField kodi_shto1;
+    private javax.swing.JPanel login;
+    private javax.swing.JButton login_buton;
+    private javax.swing.JPasswordField pass_log;
+    private javax.swing.JTextField pass_log_korr;
+    private javax.swing.JTextField pass_log_korr1;
+    private javax.swing.JPasswordField pass_reg;
+    private javax.swing.JTextArea pershkrimi_shto1;
+    private javax.swing.JTextField produkti_shto;
+    private javax.swing.JTextField produkti_shto1;
+    private javax.swing.JTextField rafti_shto1;
+    private javax.swing.JTextField sasia_shto;
+    private javax.swing.JTextField sasidalje_shto1;
+    private javax.swing.JTextField sasihyrje_shto1;
+    private javax.swing.JTextField search;
+    private javax.swing.JTextField search1;
+    private javax.swing.JButton servis_buton;
+    private javax.swing.JButton shto;
+    private javax.swing.JButton shto1;
+    private javax.swing.JButton shto2;
+    private javax.swing.JButton shto_buton;
+    private javax.swing.JPanel shtoprodukte;
+    private javax.swing.JPanel shtoprodukte1;
+    private javax.swing.JPanel tabela;
+    private javax.swing.JPanel tabela1;
+    private javax.swing.JPanel tabelaa;
+    private javax.swing.JTable table;
+    private javax.swing.JTable table1;
+    private javax.swing.JLabel totalii;
+    private javax.swing.JLabel totalii1;
+    // End of variables declaration//GEN-END:variables
+}
